@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jana Speldrich — ML Projects</title>
+<meta name="description" content="Three machine-learning projects on trustworthy, robust models under real-world constraints." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" />
+
+<style>
+  :root {
+    --ground: #F7F8F6;
+    --surface: #FFFFFF;
+    --surface-2: #F0F2EF;
+    --ink: #12161C;
+    --ink-dim: #5A6472;
+    --ink-faint: #8A93A0;
+    --accent: #1F9D57;
+    --accent-ink: #0C7C40;
+    --warn: #B4740F;
+    --line: #E2E5E0;
+    --line-strong: #CDD2CB;
+    --shadow: 0 1px 2px rgba(18, 22, 28, .04), 0 8px 24px -12px rgba(18, 22, 28, .12);
+
+    --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+    --font-body: "Newsreader", Georgia, "Times New Roman", serif;
+    --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+    --measure: 64ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0E1116;
+      --surface: #171B22;
+      --surface-2: #1D222B;
+      --ink: #E8EBF0;
+      --ink-dim: #9BA3B0;
+      --ink-faint: #6B7480;
+      --accent: #4ADE80;
+      --accent-ink: #6EE79A;
+      --warn: #F0A93B;
+      --line: #2A303B;
+      --line-strong: #3A424F;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -14px rgba(0, 0, 0, .55);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0E1116;
+    --surface: #171B22;
+    --surface-2: #1D222B;
+    --ink: #E8EBF0;
+    --ink-dim: #9BA3B0;
+    --ink-faint: #6B7480;
+    --accent: #4ADE80;
+    --accent-ink: #6EE79A;
+    --warn: #F0A93B;
+    --line: #2A303B;
+    --line-strong: #3A424F;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 12px 30px -14px rgba(0, 0, 0, .55);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.6;
+    font-optical-sizing: auto;
+  }
+
+  img { max-width: 100%; }
+
+  ::selection { background: var(--accent); color: var(--ground); }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 28px 96px;
+  }
+
+  a { color: inherit; }
+
+  a:focus-visible,
+  button:focus-visible,
+  .tile:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  /* ---------- header ---------- */
+
+  header {
+    padding: 72px 0 44px;
+    border-bottom: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 40px;
+    align-items: end;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6vw, 3.9rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 20px;
+    text-wrap: balance;
+  }
+
+  .lede {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 1.16rem;
+    color: var(--ink-dim);
+  }
+
+  .lede em { color: var(--ink); font-style: italic; }
+
+  .contact {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 2.1;
+    text-align: right;
+    color: var(--ink-dim);
+    white-space: nowrap;
+  }
+
+  .contact a {
+    text-decoration: none;
+    border-bottom: 1px solid var(--line-strong);
+    padding-bottom: 1px;
+    transition: border-color .15s, color .15s;
+  }
+
+  .contact a:hover { color: var(--accent-ink); border-color: var(--accent); }
+
+  /* ---------- section label ---------- */
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin: 56px 0 28px;
+  }
+
+  .section-head h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .section-head .count {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .section-head .rule {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* ---------- tiles ---------- */
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  @media (max-width: 900px) {
+    .tiles { grid-template-columns: 1fr; }
+    header { grid-template-columns: 1fr; align-items: start; }
+    .contact { text-align: left; }
+  }
+
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 24px 22px 22px;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    width: 100%;
+    transition: border-color .16s ease, transform .16s ease, box-shadow .16s ease;
+  }
+
+  .tile:hover {
+    border-color: var(--line-strong);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+
+  .tile[aria-expanded="true"] {
+    border-color: var(--accent);
+  }
+
+  .tile-kind {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .tile-kind .act {
+    color: var(--accent-ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .tile-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.28rem;
+    line-height: 1.16;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .tile-result {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--ink-dim);
+    flex: 1;
+  }
+
+  .tile-result b {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: .92em;
+    color: var(--ink);
+    background: var(--surface-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .chip {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-dim);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 3px 8px;
+  }
+
+  .chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, var(--line)); }
+  .chip.go { color: var(--accent-ink); border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+
+  /* ---------- detail panels ---------- */
+
+  .detail {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .detail[hidden] { display: none; }
+
+  .detail-inner {
+    padding: 34px 36px 38px;
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 40px;
+  }
+
+  @media (max-width: 820px) {
+    .detail-inner { grid-template-columns: 1fr; gap: 28px; padding: 26px 22px 30px; }
+  }
+
+  .detail h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.5rem;
+    letter-spacing: -0.015em;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+
+  .detail .sub {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 0 0 22px;
+  }
+
+  .detail h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 22px 0 8px;
+  }
+
+  .detail p { margin: 0 0 12px; max-width: var(--measure); }
+
+  .detail p:first-of-type { margin-top: 0; }
+
+  .detail a.link {
+    color: var(--accent-ink);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+
+  .detail a.link:hover { border-color: var(--accent); }
+
+  .resultstable {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .resultstable th,
+  .resultstable td {
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .resultstable th {
+    color: var(--ink-faint);
+    font-weight: 500;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    font-size: 10.5px;
+  }
+
+  .resultstable td:last-child,
+  .resultstable th:last-child { text-align: right; }
+
+  .resultstable .best td { color: var(--accent-ink); }
+
+  .aside-card {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 18px 16px;
+  }
+
+  .aside-card h4 { margin-top: 0; }
+
+  .kv {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 14px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  .kv dt { color: var(--ink-faint); }
+  .kv dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .detail-close {
+    margin-top: 26px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    background: none;
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+
+  .detail-close:hover { color: var(--ink); border-color: var(--ink-dim); }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 4px;
+  }
+
+  /* ---------- footer ---------- */
+
+  footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    .tile:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Jana Speldrich &middot; Data Science</p>
+      <h1>Machine learning that holds up outside the training set</h1>
+      <p class="lede">
+        Three projects on the same problem from different angles: keeping a model
+        <em>trustworthy</em> once it meets real constraints &mdash; a safety rule it must never break,
+        users it has never seen, a hidden test set that punishes overfitting.
+      </p>
+    </div>
+    <nav class="contact" aria-label="contact links">
+      <a href="mailto:YOUR-EMAIL@example.com">email</a><br />
+      <a href="https://github.com/jspldrch" target="_blank" rel="noopener">github.com/jspldrch</a><br />
+      Mannheim &middot; NYCU exchange
+    </nav>
+  </header>
+
+  <div class="section-head">
+    <h2>Selected projects</h2>
+    <span class="count">03</span>
+    <span class="rule"></span>
+  </div>
+
+  <div class="tiles" id="tiles">
+
+    <!-- TILE 1: RL -->
+    <a class="tile" id="tile-rl"
+       href="https://modernhuman0531.github.io/RL_final_project/"
+       target="_blank" rel="noopener">
+      <span class="tile-kind">
+        <span>Reinforcement Learning</span>
+        <span class="act">site&nbsp;&#8599;</span>
+      </span>
+      <h3 class="tile-title">Trustworthy Traffic Signal Control with Deep RL</h3>
+      <p class="tile-result">
+        Action-constrained PPO with feasible-action masking:
+        <b>0.0% pedestrian-safety violations</b> while cutting average wait time
+        <b>8.5%</b> below the safe DQN baseline.
+      </p>
+      <div class="chips">
+        <span class="chip">PPO</span>
+        <span class="chip">SUMO</span>
+        <span class="chip">masked&nbsp;softmax</span>
+        <span class="chip go">0%&nbsp;violations</span>
+      </div>
+    </a>
+
+    <!-- TILE 2: DM final -->
+    <button class="tile" id="tile-dis" type="button"
+            aria-expanded="false" aria-controls="detail-dis">
+      <span class="tile-kind">
+        <span>Data Mining &middot; Final Project</span>
+        <span class="act">&#43;&nbsp;details</span>
+      </span>
+      <h3 class="tile-title">Natural Disaster Severity Prediction</h3>
+      <p class="tile-result">
+        Forecasting weekly drought-severity scores five weeks ahead from
+        meteorological history alone &mdash; Kaggle competition, evaluated on <b>MAE</b>.
+      </p>
+      <div class="chips">
+        <span class="chip">time&nbsp;series</span>
+        <span class="chip">gradient&nbsp;boosting</span>
+        <span class="chip">5-week&nbsp;horizon</span>
+        <span class="chip warn">MAE</span>
+      </div>
+    </button>
+
+    <!-- TILE 3: DM asg3 -->
+    <button class="tile" id="tile-har" type="button"
+            aria-expanded="false" aria-controls="detail-har">
+      <span class="tile-kind">
+        <span>Data Mining &middot; Assignment&nbsp;3</span>
+        <span class="act">&#43;&nbsp;details</span>
+      </span>
+      <h3 class="tile-title">Human Activity Recognition from Wrist Accelerometers</h3>
+      <p class="tile-result">
+        6-class activity classification across 100 users, 31 controlled runs.
+        Final macro-F1 <b>0.7906</b> &mdash; above all three competition baselines.
+      </p>
+      <div class="chips">
+        <span class="chip">LightGBM&nbsp;+&nbsp;XGB&nbsp;+&nbsp;RF</span>
+        <span class="chip">716&nbsp;features</span>
+        <span class="chip">GroupKFold</span>
+        <span class="chip go">macro-F1&nbsp;0.79</span>
+      </div>
+    </button>
+
+    <!-- DETAIL: disaster -->
+    <section class="detail" id="detail-dis" hidden aria-labelledby="detail-dis-h">
+      <div class="detail-inner">
+        <div>
+          <h3 id="detail-dis-h">Natural Disaster Severity Prediction</h3>
+          <p class="sub">NYCU Data Mining, Spring 2026 &middot; group Kaggle competition &middot; metric: MAE</p>
+
+          <p>
+            Each region in the dataset has 5,480 days of meteorological readings &mdash; wind, humidity,
+            temperature at surface and dew point, precipitation &mdash; but a drought-severity
+            <span style="font-family:var(--font-mono);font-size:.9em">score</span> (0&ndash;5) recorded
+            only <em>once a week</em>; the other six days are <code>NaN</code>. The task: take 91 days
+            of history for a region and predict its severity for the next five consecutive weeks.
+          </p>
+
+          <h4>Approach</h4>
+          <p>
+            I treated it as a multi-horizon regression over engineered temporal features rather than
+            a sequence model. Weekly targets were aligned to the last observed day of each 7-day block;
+            features summarise both the 91-day window as a whole and its recent sub-windows, so the
+            model sees the overall regime and the short-term trend into the forecast. Gradient-boosted
+            trees, since the meteorological features sit on very different scales and the tree splits
+            are scale-invariant.
+          </p>
+
+          <h4>What made it hard</h4>
+          <p>
+            The label sparsity &mdash; six of every seven rows unlabelled &mdash; and a private leaderboard
+            drawn from a different, harder slice of the test set than the public one. The design
+            choice that mattered was building the validation split to mirror that gap instead of
+            chasing the public score.
+          </p>
+
+          <div class="tag-row">
+            <span class="chip">pandas</span>
+            <span class="chip">multi-horizon</span>
+            <span class="chip">feature&nbsp;engineering</span>
+            <span class="chip">IEEE&nbsp;report</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="aside-card">
+            <h4>At a glance</h4>
+            <dl class="kv">
+              <dt>Type</dt><dd>Group &middot; Kaggle</dd>
+              <dt>Metric</dt><dd>Mean Absolute Error</dd>
+              <dt>Input</dt><dd>91 days / region</dd>
+              <dt>Output</dt><dd>5 weekly scores</dd>
+              <dt>Target</dt><dd>drought severity 0&ndash;5</dd>
+              <dt>History</dt><dd>5,480 days / region</dd>
+            </dl>
+          </div>
+
+          <h4>Public leaderboard baselines</h4>
+          <table class="resultstable">
+            <thead>
+              <tr><th>Reference</th><th>MAE</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Baseline&nbsp;1</td><td>0.9117</td></tr>
+              <tr><td>Baseline&nbsp;2</td><td>0.8623</td></tr>
+              <tr><td>Baseline&nbsp;3</td><td>0.8056</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:13px;color:var(--ink-dim);margin-top:10px">
+            Lower is better; the goal was to clear Baseline&nbsp;3 on the hidden private split.
+          </p>
+
+          <button class="detail-close" type="button" data-close="detail-dis">Close &times;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DETAIL: HAR -->
+    <section class="detail" id="detail-har" hidden aria-labelledby="detail-har-h">
+      <div class="detail-inner">
+        <div>
+          <h3 id="detail-har-h">Human Activity Recognition from Wrist Accelerometers</h3>
+          <p class="sub">
+            NYCU Data Mining, Spring 2026 &middot; individual Kaggle competition &middot; metric: macro-F1 &middot;
+            <a class="link" href="https://github.com/jspldrch/DataMining_Assignment3" target="_blank" rel="noopener">github.com/jspldrch/DataMining_Assignment3</a>
+          </p>
+
+          <p>
+            100 users wore a wrist accelerometer; each 5-minute window carries one activity label
+            (0&ndash;5) and 300 rows of per-second mean/std for three axes. The classes are severely
+            imbalanced &mdash; two of them make up 85% of the data, one is 1.3% &mdash; and the test users are
+            entirely unseen, so anything that memorises a person's individual movement signature
+            fails on the leaderboard.
+          </p>
+
+          <h4>What worked</h4>
+          <p>
+            <b>Dropping normalisation entirely</b> was the single biggest gain (+0.017 F1). Per-user
+            normalisation looked principled but erased the gravity projection in
+            <span style="font-family:var(--font-mono);font-size:.9em">mean_z</span> &mdash; which is
+            class-specific signal, not user noise. Trees don't need scaled inputs, so keeping the raw
+            values back paid off.
+          </p>
+          <p>
+            <b>Temporal sub-windows</b> &mdash; the same statistics recomputed over ten 30-second segments &mdash;
+            added +6.7pp on cross-validation: how the signal evolves matters more than its global shape.
+          </p>
+          <p>
+            <b>GroupKFold on user identity</b> made local CV finally track the leaderboard, and a small
+            heterogeneous ensemble (5&times;LightGBM + 2&times;XGBoost + 1&times;RandomForest) beat 30 copies of a single
+            model &mdash; diversity over size.
+          </p>
+
+          <h4>What didn't</h4>
+          <p>
+            Deep learning (1D-CNN + LSTM) overfit the training users badly. Aggressive feature selection
+            consistently hurt &mdash; the regularised trees handle 700+ correlated features better than any
+            pruning I tried. Augmentation helped the small feature set but hurt the large one.
+          </p>
+
+          <div class="tag-row">
+            <span class="chip">LightGBM</span>
+            <span class="chip">XGBoost</span>
+            <span class="chip">FFT&nbsp;/&nbsp;Welch&nbsp;PSD</span>
+            <span class="chip">31&nbsp;ablation&nbsp;runs</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="aside-card">
+            <h4>At a glance</h4>
+            <dl class="kv">
+              <dt>Type</dt><dd>Individual &middot; Kaggle</dd>
+              <dt>Metric</dt><dd>macro-F1</dd>
+              <dt>Classes</dt><dd>6 (imbalanced)</dd>
+              <dt>Users</dt><dd>100, disjoint test</dd>
+              <dt>Features</dt><dd>716 hand-crafted</dd>
+              <dt>CV</dt><dd>GroupKFold(5)</dd>
+              <dt>Runs</dt><dd>31 single-change</dd>
+            </dl>
+          </div>
+
+          <h4>Result vs. baselines (public LB)</h4>
+          <table class="resultstable">
+            <thead>
+              <tr><th>Model</th><th>macro-F1</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Baseline&nbsp;1</td><td>0.1201</td></tr>
+              <tr><td>Baseline&nbsp;2</td><td>0.6130</td></tr>
+              <tr><td>Baseline&nbsp;3</td><td>0.7088</td></tr>
+              <tr class="best"><td>This work (run31)</td><td>0.7906</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:13px;color:var(--ink-dim);margin-top:10px">
+            Hardest class caps at 0.24 F1 &mdash; it shares its motion profile with the majority class and
+            only the gravity direction separates them.
+          </p>
+
+          <button class="detail-close" type="button" data-close="detail-har">Close &times;</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <span>Jana Speldrich &mdash; ML project portfolio</span>
+    <span>Built 2026</span>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var tiles = document.querySelectorAll('button.tile[aria-controls]');
+
+    function closePanel(panel, tile) {
+      panel.hidden = true;
+      tile.setAttribute('aria-expanded', 'false');
+    }
+
+    function openPanel(panel, tile) {
+      document.querySelectorAll('.detail:not([hidden])').forEach(function (p) {
+        var owner = document.querySelector('[aria-controls="' + p.id + '"]');
+        if (owner && owner !== tile) closePanel(p, owner);
+      });
+      panel.hidden = false;
+      tile.setAttribute('aria-expanded', 'true');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    tiles.forEach(function (tile) {
+      var panel = document.getElementById(tile.getAttribute('aria-controls'));
+      if (!panel) return;
+
+      tile.addEventListener('click', function () {
+        if (panel.hidden) openPanel(panel, tile);
+        else closePanel(panel, tile);
+      });
+    });
+
+    document.querySelectorAll('[data-close]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var panel = document.getElementById(btn.getAttribute('data-close'));
+        var tile = document.querySelector('[aria-controls="' + panel.id + '"]');
+        closePanel(panel, tile);
+        if (tile) tile.focus();
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.detail:not([hidden])').forEach(function (p) {
+        var tile = document.querySelector('[aria-controls="' + p.id + '"]');
+        closePanel(p, tile);
+        if (tile) tile.focus();
+      });
+    });
+  })();
+</script>
+</body>
+</html>
